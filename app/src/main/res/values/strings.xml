@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Coin Price Checker</string>
+    <string-array name="select_currency">
+        <item>USD</item>
+        <item>UGX</item>
+        <item>EUR</item>
+    </string-array>
+</resources>
