@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         amountToConvert = findViewById(R.id.idAmountInput);
         coinCardsRV = findViewById(R.id.idCoinCards);
         progressBar = findViewById(R.id.idPBar);
+        Spinner spinner = findViewById(R.id.idCurrencySpinner);
 
         dbHandler = new DBHandler(MainActivity.this);
 
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         coinCardsRV.setLayoutManager(new LinearLayoutManager(this));
         coinCardsRV.setAdapter(coinCardAdapter);
 
-        Spinner spinner = findViewById(R.id.idCurrencySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.select_currency, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -86,16 +86,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
-    public boolean isInternetAvailable() {
-        try {
-            InetAddress address = InetAddress.getByName("www.google.com");
-            return !address.equals("");
-        } catch (UnknownHostException e) {
-            // Log error
-        }
-        return false;
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         fiatCurrencySelected = adapterView.getItemAtPosition(i).toString();
@@ -118,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
 
-        if (!isInternetAvailable()) {
+        if (!InternetConnectivity.hasInternetConnection(this)) {
 
           coinCardsDataList =  dbHandler.fetchCachedCoins();
           coinCardAdapter.notifyDataSetChanged();
@@ -135,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onResponse(JSONObject response) {
 
                 progressBar.setVisibility(View.GONE);
+                coinCardsDataList.clear();
 
                 try {
 
@@ -145,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         String symbol = it.next();
 
-                        JSONObject data = quotes.getJSONObject("symbol");
+                        JSONObject data = quotes.getJSONObject(symbol);
 
                         String coinSymbol = symbol;
 
@@ -155,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         double coinConversionRate = data.getDouble("price");
                         String coinConversionTimestamp = data.getString("last_updated");
 
-                        coinCardsDataList.add(new CoinCardModel(symbol, coinName, coinConversionRate, Timestamp.valueOf(coinConversionTimestamp)));
+                        coinCardsDataList.add(new CoinCardModel(symbol, coinName, coinConversionRate, coinConversionTimestamp));
                         dbHandler.addCoinData(symbol, coinName, coinConversionRate, coinConversionTimestamp);
                     }
 
@@ -170,22 +161,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        }, error -> {
 
-                progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
 
-                Toast.makeText(MainActivity.this, "Sorry, we're unable to process your conversion, please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Sorry, we're unable to process your conversion, please try again.", Toast.LENGTH_SHORT).show();
 
-            }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
 
                 HashMap<String, String> headers = new HashMap<>();
 
-                headers.put("X-CMC_PRO_API_KEY", "{my-fancy-secret-key}");
+                headers.put("X-CMC_PRO_API_KEY", "a18f0f76-dec6-4b2b-9c2a-d11328a8a345");
 
                 return headers;
             }

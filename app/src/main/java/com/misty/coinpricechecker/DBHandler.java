@@ -86,7 +86,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 cachedCoinsList.add(new CoinCardModel(cursor.getString(cursor.getColumnIndexOrThrow("COIN_SYMBOL")),
                         cursor.getString(cursor.getColumnIndexOrThrow("COIN_NAME")),
                         cursor.getDouble(cursor.getColumnIndexOrThrow("COIN_CONVERSION_RATE")),
-                        Timestamp.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("COIN_CONVERSION_TIMESTAMP")))));
+                        cursor.getString(cursor.getColumnIndexOrThrow("COIN_CONVERSION_TIMESTAMP"))));
             } while (cursor.moveToNext());
 
         }

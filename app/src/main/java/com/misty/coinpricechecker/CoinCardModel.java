@@ -1,16 +1,13 @@
 package com.misty.coinpricechecker;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 public class CoinCardModel {
 
     private String coinSymbol;
     private String coinName;
     private double coinConversionRate;
-    private Timestamp timeOfConversion;
+    private String timeOfConversion;
 
-    public CoinCardModel(String coinSymbol, String coinName, double coinConversionRate, Timestamp timeOfConversion) {
+    public CoinCardModel(String coinSymbol, String coinName, double coinConversionRate, String timeOfConversion) {
         this.coinSymbol = coinSymbol;
         this.coinName = coinName;
         this.coinConversionRate = coinConversionRate;
@@ -41,11 +38,11 @@ public class CoinCardModel {
         this.coinConversionRate = coinConversionRate;
     }
 
-    public Timestamp getTimeOfConversion() {
+    public String getTimeOfConversion() {
         return timeOfConversion;
     }
 
-    public void setTimeOfConversion(Timestamp timeOfConversion) {
+    public void setTimeOfConversion(String timeOfConversion) {
         this.timeOfConversion = timeOfConversion;
     }
 }
