@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 HashMap<String, String> headers = new HashMap<>();
 
+                //key will be deleted shortly
                 headers.put("X-CMC_PRO_API_KEY", "a18f0f76-dec6-4b2b-9c2a-d11328a8a345");
 
                 return headers;
